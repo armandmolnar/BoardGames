@@ -12,13 +12,13 @@ initial_board = create_board()
 initial_board[1, 1] = "queen"
 positions_of_queens = [k for k, v in initial_board.items() if v == 'queen']
 for g in positions_of_queens:
-    print(g[0])
     for c in range(8):
+        # rows of the queens: free->forbidden
         if initial_board[g[0], c] == "free":
             initial_board[g[0], c] = "forbidden"
-    for r in range(8):
-        if initial_board[r, g[1]] == "free":
-            initial_board[r, g[1]] = "forbidden"
+        # columns of the queens: free->forbidden
+        if initial_board[c, g[1]] == "free":
+            initial_board[c, g[1]] = "forbidden"
 
 positions_of_not_free = [k for k, v in initial_board.items() if v != 'free']
 print(positions_of_not_free)
