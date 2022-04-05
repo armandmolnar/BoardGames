@@ -24,6 +24,17 @@ class Board:
         if self.board[row, column] == "free":
             self.board[row, column] = "queen"
 
+    def remove_queen(self, row, column):
+        if self.board[row, column] == "queen":
+            self.board[row, column] = "free"
+
+    def clear_forbidden_tiles(self):
+        rows = self.row
+        for r in range(rows):
+            for c in range(rows):
+                if self.board[r, c] == "forbidden":
+                    self.board[r, c] = "free"
+
     def set_forbidden_tiles(self):
         positions_of_queens = [k for k, v in self.board.items() if v == 'queen']
         rows = self.row
@@ -55,7 +66,28 @@ class Board:
 
 b = Board()
 b.put_queen(0, 0)
+b.put_queen(1, 2)
+b.set_forbidden_tiles()
+# print(b.get_free_tiles()[0])
+# print(len(b.get_free_tiles()))
+print(b)
+b.remove_queen(0, 0)
+b.clear_forbidden_tiles()
 b.set_forbidden_tiles()
 print(b)
+# print(b.get_free_tiles()[0])
+# print(len(b.get_free_tiles()))
 
 
+"""
+if __name__ == "main":
+    b = Board()
+    for queen_no in range(1, 8):
+        if len(b.get_free_tiles()) > 0:
+            for free_tile in b.get_free_tiles():
+                b.put_queen(free_tile)
+                b.set_forbidden_tiles()
+
+
+
+"""
