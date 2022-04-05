@@ -26,26 +26,27 @@ class Board:
 
     def set_forbidden_tiles(self):
         positions_of_queens = [k for k, v in self.board.items() if v == 'queen']
-        for g in positions_of_queens:
-            for n in range(8):
+        rows = self.row
+        for x, y in positions_of_queens:
+            for n in range(rows):
                 # rows of the queens: free->forbidden
-                if self.board[g[0], n] == "free":
-                    self.board[g[0], n] = "forbidden"
+                if self.board[x, n] == "free":
+                    self.board[x, n] = "forbidden"
                 # columns of the queens: free->forbidden
-                if self.board[n, g[1]] == "free":
-                    self.board[n, g[1]] = "forbidden"
+                if self.board[n, y] == "free":
+                    self.board[n, y] = "forbidden"
                 # left_and_up axes of the queens: free->forbidden
-                if g[0] - n >= 0 and g[1] - n >= 0 and self.board[g[0] - n, g[1] - n] == "free":
-                    self.board[g[0] - n, g[1] - n] = "forbidden"
+                if (x - n) >= 0 and (y - n) >= 0 and self.board[x - n, y - n] == "free":
+                    self.board[x - n, y - n] = "forbidden"
                 # left_and_down axes of the queens: free->forbidden
-                if g[0] + n <= 7 and g[1] - n >= 0 and self.board[g[0] + n, g[1] - n] == "free":
-                    self.board[g[0] + n, g[1] - n] = "forbidden"
+                if (x + n) < rows and (y - n) >= 0 and self.board[x + n, y - n] == "free":
+                    self.board[x + n, y - n] = "forbidden"
                 # right_and_up axes of the queens: free->forbidden
-                if g[0] - n >= 0 and g[1] + n <= 7 and self.board[g[0] - n, g[1] + n] == "free":
-                    self.board[g[0] - n, g[1] + n] = "forbidden"
+                if (x - n) >= 0 and (y + n) < rows and self.board[x - n, y + n] == "free":
+                    self.board[x - n, y + n] = "forbidden"
                 # right_and_down axes of the queens: free->forbidden
-                if g[0] + n <= 7 and g[1] + n <= 7 and self.board[g[0] + n, g[1] + n] == "free":
-                    self.board[g[0] + n, g[1] + n] = "forbidden"
+                if (x + n) < rows and (y + n) < rows and self.board[x + n, y + n] == "free":
+                    self.board[x + n, y + n] = "forbidden"
 
     def get_free_tiles(self):
         positions_of_free_tiles = [k for k, v in self.board.items() if v == 'free']
@@ -53,7 +54,7 @@ class Board:
 
 
 b = Board()
-b.put_queen(4, 4)
+b.put_queen(0, 0)
 b.set_forbidden_tiles()
 print(b)
 
