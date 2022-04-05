@@ -1,17 +1,28 @@
 class Board:
-    def __init__(self, row, column):
-        self.row = row
-        self.column = column
+    def __init__(self):
+        self.row = 8
+        self.column = 8
         self.board = {}
         for row in range(self.row):
             for column in range(self.column):
                 self.board[row, column] = "free"
 
     def __str__(self):
-        return "*"
+        b = ""
+        for r in range(self.row):
+            for c in range(self.column):
+                if self.board[r, c] == "free":
+                    b = b + ". "
+                elif self.board[r, c] == "queen":
+                    b = b + "Q "
+                elif self.board[r, c] == "forbidden":
+                    b = b + "x "
+            b = b + "\n"
+        return b
 
     def put_queen(self, row, column):
-        self.board[row, column] = "queen"
+        if self.board[row, column] == "free":
+            self.board[row, column] = "queen"
 
     def set_forbidden_tiles(self):
         positions_of_queens = [k for k, v in self.board.items() if v == 'queen']
@@ -30,7 +41,7 @@ class Board:
                 if g[0] + n <= 7 and g[1] - n >= 0 and self.board[g[0] + n, g[1] - n] == "free":
                     self.board[g[0] + n, g[1] - n] = "forbidden"
                 # right_and_up axes of the queens: free->forbidden
-                if g[0] - n >= 0 and g[1] + n >= 7 and self.board[g[0] - n, g[1] + n] == "free":
+                if g[0] - n >= 0 and g[1] + n <= 7 and self.board[g[0] - n, g[1] + n] == "free":
                     self.board[g[0] - n, g[1] + n] = "forbidden"
                 # right_and_down axes of the queens: free->forbidden
                 if g[0] + n <= 7 and g[1] + n <= 7 and self.board[g[0] + n, g[1] + n] == "free":
@@ -41,9 +52,9 @@ class Board:
         return positions_of_free_tiles
 
 
-b = Board(8, 8)
-b.put_queen(3, 4)
+b = Board()
+b.put_queen(4, 4)
 b.set_forbidden_tiles()
-print(b.get_free_tiles())
+print(b)
 
 
