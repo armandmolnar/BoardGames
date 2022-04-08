@@ -64,6 +64,30 @@ class Board:
         return positions_of_free_tiles
 
 
+def try_to_put_queen(trial_id, placed_queen):
+    trial_id += 1
+    while placed_queen < 9:
+        if len(b.get_free_tiles()) > 0:
+            for x, y in b.get_free_tiles():
+                b.put_queen(x, y)
+                b.set_forbidden_tiles()
+                placed_queen += 1
+                if try_to_put_queen(trial_id, placed_queen)[0] > try_to_put_queen(trial_id, placed_queen)[1]:
+                    b.remove_queen(x, y)
+                    b.clear_forbidden_tiles()
+                    b.set_forbidden_tiles()
+                    continue
+            try_to_put_queen(trial_id, placed_queen)
+        else:
+            break
+    return trial_id, placed_queen
+
+
+if __name__ == "__main__":
+    b = Board()
+    try_to_put_queen(0, 0)
+    print(b)
+
 """
 b = Board()
 b.put_queen(0, 0)
@@ -79,37 +103,6 @@ print(b)
 # print(b.get_free_tiles()[0])
 # print(len(b.get_free_tiles()))
 """
-
-
-def try_to_put_queen(trial_id, placed_queen):
-    trial_id += 1
-    while trial_id < 9:
-        if len(b.get_free_tiles()) > 0:
-            for x, y in b.get_free_tiles():
-                b.put_queen(x, y)
-                b.set_forbidden_tiles()
-                placed_queen += 1
-                if not try_to_put_queen(trial_id, placed_queen)[2]:
-
-
-
-    return trial_id, placed_queen, len(b.get_free_tiles()) > 0
-
-if __name__ == "__main__":
-    b = Board()
-    queen_no = 0
-
-    if len(b.get_free_tiles()) > 0:
-
-
-
-        queen_no += 1
-        print(queen_no)
-
-
-    print(b)
-
-
 
 
 
