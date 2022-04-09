@@ -1,7 +1,20 @@
+from os import system, name
+import time
+#time.sleep(.5)
+
+def clear_screen():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')  
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
+
+
 class Board:
-    def __init__(self):
-        self.row = 10
-        self.column = 8
+    def __init__(self, rows, cols):
+        self.row = rows
+        self.column = cols
         self.board = {}
         for row in range(self.row):
             for column in range(self.column):
@@ -66,22 +79,46 @@ class Board:
         return positions_of_free_tiles
 
 
-b = Board()
+
+
+
+b = Board(4, 4)
+
+start_time = time.time()
+seconds = 5
+b.put_queen(0,0)
+b.set_forbidden_tiles()
+while time.time() - start_time < seconds:
+    clear_screen()
+    print(b)
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 b.put_queen(7, 7)
 b.put_queen(1, 2)
 b.set_forbidden_tiles()
-# print(b.get_free_tiles()[0])
-# print(len(b.get_free_tiles()))
+print(b.get_free_tiles()[0])
+print(len(b.get_free_tiles()))
 print(b)
 b.remove_queen(7, 7)
 b.clear_forbidden_tiles()
 b.set_forbidden_tiles()
 print(b)
-# print(b.get_free_tiles()[0])
-# print(len(b.get_free_tiles()))
+print(b.get_free_tiles()[0])
+print(len(b.get_free_tiles()))
 
 
-"""
+
 if __name__ == "main":
     b = Board()
     for queen_no in range(1, 8):
