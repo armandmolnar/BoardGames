@@ -1,8 +1,21 @@
+'''
+ ,---.                                                    
+|  o  |  ,---.  ,--.,--.  ,---.   ,---.  ,--,--,   ,---.  
+.'   '. | .-. | |  ||  | | .-. : | .-. : |      \ (  .-'  
+|  o  | ' '-' | '  ''  ' \   --. \   --. |  ||  | .-'  `) 
+ `---'   `-|  |  `----'   `----'  `----' `--''--' `----'  
+           `--'                                           
+'''
+
 from os import system, name
 import time
 
 
-def clear_screen():
+
+def clear_screen() -> None:
+    '''
+    clears terminal screen in all OS
+    '''
     # for windows
     if name == 'nt':
         _ = system('cls')  
@@ -11,8 +24,8 @@ def clear_screen():
         _ = system('clear')
 
 
-class Board:
-    def __init__(self, rows, cols):
+class Board(object):
+    def __init__(self, rows:int, cols:int):
         self.row = rows
         self.column = cols
         self.board = {}
@@ -20,7 +33,7 @@ class Board:
             for column in range(self.column):
                 self.board[row, column] = "free"
 
-    def __str__(self):
+    def __str__(self) -> str:
         b = ""
         for r in range(self.row):
             for c in range(self.column):
@@ -33,26 +46,43 @@ class Board:
             b = b + "\n"
         return b
 
-    def put_queen(self, row, column):
+    def get_cols(self) -> int:
+        return self.column
+
+    def put_queen(self, row:int, column:int) -> None:
         if self.board[row, column] == "free":
             self.board[row, column] = "queen"
 
-    def set_forbidden(self, row, column):
-        self.board[row, column] = "forbidden"
+    def set_forbidden(self, row:int, column:int) -> None:
+        for c in range(column+1):
+            self.board[row, c] = "forbidden"
 
-    def remove_queen(self, row, column):
+    def remove_queen(self, row:int, column:int) -> None:
         if self.board[row, column] == "queen":
             self.board[row, column] = "free"
 
-    def clear_forbidden_tiles(self):
+    def clear_forbidden_tiles(self) -> None:
         rows = self.row
         cols =self.column
         for r in range(rows):
             for c in range(cols):
                 if self.board[r, c] == "forbidden":
                     self.board[r, c] = "free"
+    
+    
+    def validate_rows(self) -> bool:
+        rows = self.row
+        cols = self.column
+        for r in range(rows):
+            forbiddens = 0
+            for c in range(cols):
+                if self.board[r, c] == "forbidden":
+                    forbiddens += 1
+            if forbiddens == cols:
+                return False
+        return True
 
-    def set_forbidden_tiles(self):
+    def set_forbidden_tiles(self) -> None:
         positions_of_queens = [k for k, v in self.board.items() if v == 'queen']
         rows = self.row
         cols = self.column
@@ -77,88 +107,50 @@ class Board:
                 if (x + n) < rows and (y + n) < cols and self.board[x + n, y + n] == "free":
                     self.board[x + n, y + n] = "forbidden"
 
-    def get_free_tiles(self):
+    def get_free_tiles(self) -> list:
         positions_of_free_tiles = [k for k, v in self.board.items() if v == 'free']
         return positions_of_free_tiles
 
-    def get_queens(self):
+    def get_queens(self) -> list:
         positions_of_queens = [k for k, v in self.board.items() if v == 'queen']
         return positions_of_queens
 
 
-b = Board(8, 8)
+BOARD_SIZE = 5
+TIMEOUT_SECONDS = 60
+DELAY = .1
+
+b = Board(BOARD_SIZE, BOARD_SIZE)
 clear_screen()
 print(b)
 start_time = time.time()
-seconds = 5
 b.put_queen(0,0)
 b.set_forbidden_tiles()
 
-while time.time() - start_time < seconds:
+while time.time() - start_time < TIMEOUT_SECONDS:
     clear_screen()
     print(b)
-    time.sleep(.5)
     free_tiles = b.get_free_tiles()
-    print (free_tiles)
-    
-    if len(free_tiles):
+    time.sleep(DELAY)
+
+    if len (b.get_queens()) == b.get_cols():
+        print('Solution Found!')
+        time.sleep(1.5)
+
+    if len(free_tiles) and b.validate_rows():
         x, y = free_tiles[0]
         b.put_queen(x,y)
         b.clear_forbidden_tiles()
         b.set_forbidden_tiles()
 
     else:
-        b.remove_queen(x, y)
-        b.clear_forbidden_tiles()
-        b.set_forbidden_tiles()
-        b.set_forbidden(x, y)
-        
-        '''b.clear_forbidden_tiles()
-        b.set_forbidden_tiles()
-        clear_screen()
-        print(b)
-        time.sleep(.5)
-        x, y = b.get_queens()[-1:]
-        b.remove_queen(x, y)
-        b.clear_forbidden_tiles()'''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-b.put_queen(7, 7)
-b.put_queen(1, 2)
-b.set_forbidden_tiles()
-print(b.get_free_tiles()[0])
-print(len(b.get_free_tiles()))
-print(b)
-b.remove_queen(7, 7)
-b.clear_forbidden_tiles()
-b.set_forbidden_tiles()
-print(b)
-print(b.get_free_tiles()[0])
-print(len(b.get_free_tiles()))
-
-
-
-if __name__ == "main":
-    b = Board()
-    for queen_no in range(1, 8):
-        if len(b.get_free_tiles()) > 0:
-            for free_tile in b.get_free_tiles():
-                b.put_queen(free_tile)
-                b.set_forbidden_tiles()
-
-
-
-"""
+        if b.get_queens():
+            x, y = b.get_queens()[-1:][0]
+            b.remove_queen(x, y)
+            b.clear_forbidden_tiles()
+            b.set_forbidden_tiles()
+            b.set_forbidden(x, y)
+        else:
+            clear_screen()
+            print("that's all folks!")
+            break
