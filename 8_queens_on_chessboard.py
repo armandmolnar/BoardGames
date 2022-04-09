@@ -1,6 +1,6 @@
 from os import system, name
 import time
-#time.sleep(.5)
+
 
 def clear_screen():
     # for windows
@@ -36,6 +36,9 @@ class Board:
     def put_queen(self, row, column):
         if self.board[row, column] == "free":
             self.board[row, column] = "queen"
+
+    def set_forbidden(self, row, column):
+        self.board[row, column] = "forbidden"
 
     def remove_queen(self, row, column):
         if self.board[row, column] == "queen":
@@ -78,19 +81,48 @@ class Board:
         positions_of_free_tiles = [k for k, v in self.board.items() if v == 'free']
         return positions_of_free_tiles
 
+    def get_queens(self):
+        positions_of_queens = [k for k, v in self.board.items() if v == 'queen']
+        return positions_of_queens
 
 
-
-
-b = Board(4, 4)
-
+b = Board(8, 8)
+clear_screen()
+print(b)
 start_time = time.time()
 seconds = 5
 b.put_queen(0,0)
 b.set_forbidden_tiles()
+
 while time.time() - start_time < seconds:
     clear_screen()
     print(b)
+    time.sleep(.5)
+    free_tiles = b.get_free_tiles()
+    print (free_tiles)
+    
+    if len(free_tiles):
+        x, y = free_tiles[0]
+        b.put_queen(x,y)
+        b.clear_forbidden_tiles()
+        b.set_forbidden_tiles()
+
+    else:
+        b.remove_queen(x, y)
+        b.clear_forbidden_tiles()
+        b.set_forbidden_tiles()
+        b.set_forbidden(x, y)
+        
+        '''b.clear_forbidden_tiles()
+        b.set_forbidden_tiles()
+        clear_screen()
+        print(b)
+        time.sleep(.5)
+        x, y = b.get_queens()[-1:]
+        b.remove_queen(x, y)
+        b.clear_forbidden_tiles()'''
+
+
 
 
 
