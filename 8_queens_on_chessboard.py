@@ -116,9 +116,10 @@ class Board(object):
         return positions_of_queens
 
 
-BOARD_SIZE = 5
-TIMEOUT_SECONDS = 60
-DELAY = .1
+BOARD_SIZE = 8
+TIMEOUT_SECONDS = 600
+DELAY = .00
+all_solutions = 0
 
 b = Board(BOARD_SIZE, BOARD_SIZE)
 clear_screen()
@@ -134,8 +135,9 @@ while time.time() - start_time < TIMEOUT_SECONDS:
     time.sleep(DELAY)
 
     if len (b.get_queens()) == b.get_cols():
-        print('Solution Found!')
-        time.sleep(1.5)
+        all_solutions += 1
+        print(f'Solution #{all_solutions}')
+        time.sleep(1.0)
 
     if len(free_tiles) and b.validate_rows():
         x, y = free_tiles[0]
@@ -152,5 +154,5 @@ while time.time() - start_time < TIMEOUT_SECONDS:
             b.set_forbidden(x, y)
         else:
             clear_screen()
-            print("that's all folks!")
+            print(f"{BOARD_SIZE}-queen problem has {all_solutions} solutions.")
             break
